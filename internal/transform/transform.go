@@ -23,10 +23,28 @@ func Scramble(imagePath string, key string) (image.Image, error) {
 	}
 
 	width, height := getImageDimesions(img)
-	_ = width / tileSize
-	_ = height / tileSize
+	tilesX := width / tileSize
+	tilesY := height / tileSize
+	n := tilesX * tilesY
+	base := baseSlice(n)
+	perm := shuffleSlice(base, key)
+	newImage := image.NewRGBA(image.Rect(0, 0, width, height))
 
-	return nil, nil
+	for src := 0; src < n; src++ {
+		srcRow, srcCol := indexToGrid(src, tilesX)
+		srcX, srcY := (srcCol * tileSize), (srcRow * tileSize)
+		dst := perm[src]
+		dstRow, dstCol := indexToGrid(dst, tilesX)
+		dstX, dstY := (dstCol * tileSize), (dstRow * tileSize)
+		for y  := 0; y  < tileSize; y++ {
+			for x  := 0; x  < tileSize; x++ {
+				color := img.At(srcX + x, srcY + y)
+				newImage.Set(dstX + x, dstY + y, color)
+			}
+		}
+	}
+
+	return newImage, nil
 }
 
 func getImageDimesions(img image.Image) (width, height int) {
