@@ -55,3 +55,11 @@ func generateSeed(key string) int {
 	}
 	return sum
 }
+
+func baseList(n int) []int {
+	base := make([]int, n)
+	for i := 0; i < n; i++ {
+		base[i] = i
+	}
+	return base
+}

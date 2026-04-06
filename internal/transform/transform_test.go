@@ -64,3 +64,29 @@ func TestGenerateSeed(t *testing.T) {
 		})
 	}
 }
+
+func TestBaseList(t *testing.T) {
+	tests := []struct {
+		name     string
+		n        int
+		expected []int
+	}{
+		{
+			name: "5 elements",
+			n: 5,
+			expected: []int{0, 1, 2, 3, 4},
+		},
+		{
+			name: "empty slice",
+			n: 0,
+			expected: []int{},
+		},
+	}
+
+	for _, tt  := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := baseList(tt.n)
+			assert.EqualSlice(t, got, tt.expected)
+		})
+	}
+}
