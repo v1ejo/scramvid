@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"image"
 	_ "image/png"
+	"math/rand/v2"
 	"os"
 )
 
@@ -56,10 +57,25 @@ func generateSeed(key string) int {
 	return sum
 }
 
-func baseList(n int) []int {
+func baseSlice(n int) []int {
 	base := make([]int, n)
 	for i := 0; i < n; i++ {
 		base[i] = i
 	}
 	return base
+}
+
+func shuffleSlice(slice []int, key string) []int {
+	if key == "" {
+		key = "secret"
+	}
+	seed := generateSeed(key)
+	s := rand.NewPCG(uint64(seed), 42)
+	r := rand.New(s)
+
+	r.Shuffle(len(slice), func(i, j int) {
+		slice[i], slice[j] = slice[j], slice[i]
+	})
+
+	return slice
 }

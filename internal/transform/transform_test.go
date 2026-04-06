@@ -65,28 +65,65 @@ func TestGenerateSeed(t *testing.T) {
 	}
 }
 
-func TestBaseList(t *testing.T) {
+func TestBaseSlice(t *testing.T) {
 	tests := []struct {
 		name     string
 		n        int
 		expected []int
 	}{
 		{
-			name: "5 elements",
-			n: 5,
+			name:     "5 elements",
+			n:        5,
 			expected: []int{0, 1, 2, 3, 4},
 		},
 		{
-			name: "empty slice",
-			n: 0,
+			name:     "empty slice",
+			n:        0,
 			expected: []int{},
 		},
 	}
 
-	for _, tt  := range tests {
+	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := baseList(tt.n)
+			got := baseSlice(tt.n)
 			assert.EqualSlice(t, got, tt.expected)
+		})
+	}
+}
+
+func TestShuffleSlice(t *testing.T) {
+	tests := []struct {
+		name  string
+		slice []int
+		key   string
+	}{
+		{
+			name:  "slice with six elements",
+			slice: baseSlice(6),
+			key:   "secret",
+		},
+		{
+			name:  "empty slice",
+			slice: baseSlice(0),
+			key:   "secret",
+		},
+		{
+			name:  "",
+			slice: baseSlice(5),
+			key:   "",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			copySlice := append([]int(nil), tt.slice...)
+			if len(tt.slice) == 0 {
+				copySlice = make([]int, 0)
+			}
+			shuffledSlice1 := shuffleSlice(tt.slice, tt.key)
+			shuffledSlice2 := shuffleSlice(copySlice, tt.key)
+			assert.EqualSlice(t, shuffledSlice1, shuffledSlice2)
+			shuffledSlice1 = shuffleSlice(tt.slice, tt.key)
 		})
 	}
 }
