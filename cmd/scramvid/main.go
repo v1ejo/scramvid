@@ -6,19 +6,26 @@ import (
 	"log"
 	"os"
 
+	"github.com/v1ejo/scramvid/internal/frames"
 	"github.com/v1ejo/scramvid/internal/transform"
 )
 
 func main() {
 	in := flag.String("in", "", "PNG file for now")
-	key := flag.String("key", "", "Key to scramble")
 	out := flag.String("out", "", "Output path PNG")
+	key := flag.String("key", "secret", "Key to scramble")
 	flag.Parse()
-	if *in == "" || *key == "" || *out == "" {
-		log.Fatal("You must give a input file name, output file name and key")
+
+	if *in == "" || *out == "" {
+		log.Fatal("You must give a input file name and output file name")
 	}
 
-	image, err := transform.Scramble(*in, *key)
+	inImg, err := frames.OpenImage(*in)
+	if err != nil {
+		log.Fatal("Unable to open image")
+	}
+
+	outImg, err := transform.Scramble(inImg, *key)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -29,5 +36,5 @@ func main() {
 	}
 	defer f.Close()
 
-	png.Encode(f, image)
+	png.Encode(f, outImg)
 }

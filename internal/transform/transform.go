@@ -5,23 +5,11 @@ import (
 	"image"
 	_ "image/png"
 	"math/rand/v2"
-	"os"
 )
 
 const tileSize int = 16
 
-func Scramble(imagePath string, key string) (image.Image, error) {
-	f, err := os.Open(imagePath)
-	if err != nil {
-		return nil, err
-	}
-
-	defer f.Close()
-	img, _, err := image.Decode(f)
-	if err != nil {
-		return nil, err
-	}
-
+func Scramble(img image.Image, key string) (image.Image, error) {
 	width, height := getImageDimesions(img)
 	tilesX := width / tileSize
 	tilesY := height / tileSize
@@ -36,10 +24,10 @@ func Scramble(imagePath string, key string) (image.Image, error) {
 		dst := perm[src]
 		dstRow, dstCol := indexToGrid(dst, tilesX)
 		dstX, dstY := (dstCol * tileSize), (dstRow * tileSize)
-		for y  := 0; y  < tileSize; y++ {
-			for x  := 0; x  < tileSize; x++ {
-				color := img.At(srcX + x, srcY + y)
-				newImage.Set(dstX + x, dstY + y, color)
+		for y := 0; y < tileSize; y++ {
+			for x := 0; x < tileSize; x++ {
+				color := img.At(srcX+x, srcY+y)
+				newImage.Set(dstX+x, dstY+y, color)
 			}
 		}
 	}
