@@ -15,7 +15,7 @@ func Scramble(img image.Image, key string) (image.Image, error) {
 	tilesY := height / tileSize
 	n := tilesX * tilesY
 	base := baseSlice(n)
-	perm := shuffleSlice(base, key)
+	perm := permuteSlice(base, key)
 	newImage := image.NewRGBA(image.Rect(0, 0, width, height))
 
 	for src := 0; src < n; src++ {
@@ -33,6 +33,41 @@ func Scramble(img image.Image, key string) (image.Image, error) {
 	}
 
 	return newImage, nil
+}
+
+func Unscramble(img image.Image, key string) (image.Image, error) {
+	width, height := getImageDimesions(img)
+	tilesX := width / tileSize
+	tilesY := height / tileSize
+	n := tilesX * tilesY
+	base := baseSlice(n)
+	perm := permuteSlice(base, key)
+	inverse := inversePermutationSlice(perm)
+	newImage := image.NewRGBA(image.Rect(0, 0, width, height))
+
+	for src := 0; src < n; src++ {
+		srcRow, srcCol := indexToGrid(src, tilesX)
+		srcX, srcY := (srcCol * tileSize), (srcRow * tileSize)
+		dst := inverse[src]
+		dstRow, dstCol := indexToGrid(dst, tilesX)
+		dstX, dstY := (dstCol * tileSize), (dstRow * tileSize)
+		for y := 0; y < tileSize; y++ {
+			for x := 0; x < tileSize; x++ {
+				color := img.At(srcX+x, srcY+y)
+				newImage.Set(dstX+x, dstY+y, color)
+			}
+		}
+	}
+
+	return newImage, nil
+}
+
+func inversePermutationSlice(permutation []int) []int {
+	inverse := make([]int, len(permutation))
+	for _, i := range permutation {
+		inverse[permutation[i]] = i
+	}
+	return inverse
 }
 
 func getImageDimesions(img image.Image) (width, height int) {
@@ -71,10 +106,7 @@ func baseSlice(n int) []int {
 	return base
 }
 
-func shuffleSlice(slice []int, key string) []int {
-	if key == "" {
-		key = "secret"
-	}
+func permuteSlice(slice []int, key string) []int {
 	seed := generateSeed(key)
 	s := rand.NewPCG(uint64(seed), 42)
 	r := rand.New(s)

@@ -91,7 +91,7 @@ func TestBaseSlice(t *testing.T) {
 	}
 }
 
-func TestShuffleSlice(t *testing.T) {
+func TestPermuteSlice(t *testing.T) {
 	tests := []struct {
 		name  string
 		slice []int
@@ -120,10 +120,10 @@ func TestShuffleSlice(t *testing.T) {
 			if len(tt.slice) == 0 {
 				copySlice = make([]int, 0)
 			}
-			shuffledSlice1 := shuffleSlice(tt.slice, tt.key)
-			shuffledSlice2 := shuffleSlice(copySlice, tt.key)
+			shuffledSlice1 := permuteSlice(tt.slice, tt.key)
+			shuffledSlice2 := permuteSlice(copySlice, tt.key)
 			assert.EqualSlice(t, shuffledSlice1, shuffledSlice2)
-			shuffledSlice1 = shuffleSlice(tt.slice, tt.key)
+			shuffledSlice1 = permuteSlice(tt.slice, tt.key)
 		})
 	}
 }
