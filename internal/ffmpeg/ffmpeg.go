@@ -19,7 +19,7 @@ func ExtractFrames(path string) error {
 		"-y",
 		"-i", path,
 		"-vf", "fps=24",
-		"video/frames/frame_%04d.png",
+		"video/frames/frame_%04d.jpg",
 	)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -38,8 +38,19 @@ func ExtractAudio(path string) error {
 
 func JoinFramesAndAudio(path string) error {
 	audioPath := "video/audio.m4a"
-	cmd := exec.Command("ffmpeg", "-y", "-framerate", "24", "-i", "video/scrambled/frame_%04d.png", "-i", audioPath,
-		"-c:v", "libx264", "-c:a", "copy", "-shortest", path)
+	cmd := exec.Command(
+		"ffmpeg",
+		"-y",
+		"-framerate", "24",
+		"-i", "video/scrambled/frame_%04d.jpg",
+		"-i", audioPath,
+		"-c:v", "libx264",
+		"-pix_fmt", "yuv420p",
+		"-c:a", "copy",
+		"-shortest",
+		"-movflags", "+faststart",
+		path,
+	)	
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()

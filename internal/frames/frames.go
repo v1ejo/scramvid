@@ -2,9 +2,8 @@ package frames
 
 import (
 	"image"
-	"image/png"
-	_ "image/png"
-	"log"
+	"image/jpeg"
+	_ "image/jpeg"
 	"os"
 	"path/filepath"
 )
@@ -31,9 +30,9 @@ func SaveImage(path string, img image.Image, name string) error {
 
 	f, err := os.Create(filepath.Join(path, name))
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	defer f.Close()
 
-	return png.Encode(f, img)
+	return jpeg.Encode(f, img, &jpeg.Options{Quality: 90})
 }

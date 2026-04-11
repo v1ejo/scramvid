@@ -30,7 +30,7 @@ func main() {
 		log.Fatal("Cannot extract audio")
 	}
 
-	paths, err := filepath.Glob("video/frames/*.png")
+	paths, err := filepath.Glob("video/frames/*.jpg")
 	if err != nil {
 		log.Fatal(err.Error())
 	}
