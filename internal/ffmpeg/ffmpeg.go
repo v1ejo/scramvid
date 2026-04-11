@@ -29,3 +29,12 @@ func ExtractAudio(path string) error {
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
 }
+
+func JoinFramesAndAudio(path string) error {
+	audioPath := "video/audio.m4a"
+	cmd := exec.Command("ffmpeg", "-y", "-framerate", "30", "-i", "video/scrambled/frame_%04d.png", "-i", audioPath,
+		"-c:v", "libx264", "-c:a", "copy", "-shortest", path)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
+}
